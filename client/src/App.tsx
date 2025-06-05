@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import { socket } from "./socket";
+import GameCanvas from "../components/GameCanvas"; // Correct relative path
 
 function App() {
   useEffect(() => {
     const handleConnect = () => {
-      console.log("Connected to server with ID:", socket.id);
+      console.log("✅ Connected to server with ID:", socket.id);
       socket.emit("joinGame", { roomId: "room-1" });
     };
 
     const handleDisconnect = () => {
-      console.log("Disconnected from server");
+      console.log("❌ Disconnected from server");
     };
 
     const handleRoomFull = () => {
@@ -25,7 +26,7 @@ function App() {
     socket.on("roomFull", handleRoomFull);
     socket.on("playerNumber", handlePlayerNumber);
 
-    // Cleanup all listeners
+    // Cleanup
     return () => {
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
@@ -36,8 +37,9 @@ function App() {
 
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <h1>🎮 Real-Time Pong Game</h1>
+      <h1 style={{ color: "white" }}>🎮 Real-Time Pong Game</h1>
       <p>Open the dev console to see socket connection logs.</p>
+      <GameCanvas />
     </div>
   );
 }
