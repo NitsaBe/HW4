@@ -3,17 +3,34 @@ import { socket } from "./socket";
 
 function App() {
   useEffect(() => {
-    socket.on("connect", () => {
+    const handleConnect = () => {
       console.log("Connected to server with ID:", socket.id);
-    });
+      socket.emit("joinGame", { roomId: "room-1" });
+    };
 
-    socket.on("disconnect", () => {
+    const handleDisconnect = () => {
       console.log("Disconnected from server");
-    });
+    };
 
+    const handleRoomFull = () => {
+      alert("Room is full. Please try again later.");
+    };
+
+    const handlePlayerNumber = (num: 1 | 2) => {
+      console.log(`🎮 You are Player ${num}`);
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("roomFull", handleRoomFull);
+    socket.on("playerNumber", handlePlayerNumber);
+
+    // Cleanup all listeners
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("roomFull", handleRoomFull);
+      socket.off("playerNumber", handlePlayerNumber);
     };
   }, []);
 
